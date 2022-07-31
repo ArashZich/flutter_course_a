@@ -1,8 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course_a/models/CryptoModel/AllCryptoModel.dart';
 import 'package:flutter_course_a/network/ApiProvider.dart';
+import 'package:flutter_course_a/network/ResponseModel.dart';
 
 class CryptoDataProvider extends ChangeNotifier {
   ApiProvider apiProvider = ApiProvider();
 
-  getTopMarketCapData() {}
+  late AllCryptoModel dataFuture;
+  late ResponseModel state;
+  var response;
+
+  getTopMarketCapData() async {
+    state = ResponseModel.loading("is loading ...");
+
+    try {
+      response = await apiProvider.getTopMarketCapData();
+      if (response.statusCode == 200) {
+        dataFuture = AllCryptoModel.fromJson(response.data);
+        state = ResponseModel.completed(dataFuture);
+      } else {
+        state = ResponseModel.error("something wrong...");
+      }
+      notifyListeners();
+    } catch (e) {
+      state = ResponseModel.error("please check your connection ...");
+      notifyListeners();
+    }
+  }
 }
