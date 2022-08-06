@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_course_a/helpers/decimalRounder.dart';
 import 'package:flutter_course_a/models/CryptoModel/CryptoData.dart';
 import 'package:flutter_course_a/providers/CryptoDataProvider.dart';
 import 'package:flutter_course_a/ui/ui_helper/HomePageView.dart';
 import 'package:flutter_course_a/ui/ui_helper/ThemeSwitcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -40,6 +43,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final cryptoProvider =
+        Provider.of<CryptoDataProvider>(context, listen: false);
     var height = MediaQuery.of(context).size.height;
     var primaryColor = Theme.of(context).primaryColor;
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -151,6 +156,17 @@ class _HomePageState extends State<HomePage> {
                               setState(() {
                                 defaultChoiceIndex =
                                     value ? index : defaultChoiceIndex;
+                                switch (index) {
+                                  case 0:
+                                    cryptoProvider.getTopMarketCapData();
+                                    break;
+                                  case 1:
+                                    cryptoProvider.getTopGainersData();
+                                    break;
+                                  case 2:
+                                    cryptoProvider.getTopLosersData();
+                                    break;
+                                }
                               });
                             },
                           );
@@ -160,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(
-                  height: 500,
+                  height: 380,
                   child: Consumer<CryptoDataProvider>(
                       builder: (context, cryptoDataProvider, child) {
                     switch (cryptoDataProvider.state.status) {
@@ -294,6 +310,27 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (conext, index) {
                               var number = index + 1;
                               var tokenId = model![index].id;
+
+                              MaterialColor filterColor =
+                                  DecimalRounder.setColorFilter(
+                                      model[index].quotes![0].percentChange24h);
+
+                              var finalPrice =
+                                  DecimalRounder.removePriceDecimals(
+                                      model[index].quotes![0].price);
+
+                              // percent change setup decimals and colors
+                              var percentChange =
+                                  DecimalRounder.removePercentDecimals(
+                                      model[index].quotes![0].percentChange24h);
+
+                              Color percentColor =
+                                  DecimalRounder.setPercentChangesColor(
+                                      model[0].quotes![0].percentChange24h);
+                              Icon percentIcon =
+                                  DecimalRounder.setPercentChangesIcon(
+                                      model[0].quotes![0].percentChange24h);
+
                               return SizedBox(
                                 height: height * 0.075,
                                 child: Row(
@@ -340,7 +377,46 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                       ),
-                                    )
+                                    ),
+                                    Flexible(
+                                        fit: FlexFit.tight,
+                                        child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                                filterColor, BlendMode.srcATop),
+                                            child: SvgPicture.network(
+                                                "https://s3.coinmarketcap.com/generated/sparklines/web/1d/2781/$tokenId.svg"))),
+                                    Expanded(
+                                        child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 10.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            "\$$finalPrice",
+                                            style: textTheme.bodySmall,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              percentIcon,
+                                              Text(
+                                                percentChange.length > 8
+                                                    ? "${percentChange.substring(0, 6)}%"
+                                                    : "$percentChange%",
+                                                style: GoogleFonts.ubuntu(
+                                                    color: percentColor,
+                                                    fontSize: 13),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ))
                                   ],
                                 ),
                               );

@@ -18,6 +18,7 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: Icon(Icons.compare_arrows_outlined),
