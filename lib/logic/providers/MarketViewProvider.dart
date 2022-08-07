@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_course_a/models/CryptoModel/AllCryptoModel.dart';
-import 'package:flutter_course_a/network/ApiProvider.dart';
-import 'package:flutter_course_a/network/ResponseModel.dart';
+import 'package:flutter_course_a/data/data_source/ApiProvider.dart';
+import 'package:flutter_course_a/data/data_source/ResponseModel.dart';
+import 'package:flutter_course_a/data/models/CryptoModel/AllCryptoModel.dart';
 
 class MarketViewProvider extends ChangeNotifier {
   ApiProvider apiProvider = ApiProvider();

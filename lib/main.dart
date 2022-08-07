@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_course_a/providers/CryptoDataProvider.dart';
-import 'package:flutter_course_a/providers/MarketViewProvider.dart';
-import 'package:flutter_course_a/providers/ThemeProvider.dart';
-import 'package:flutter_course_a/ui/MainWrapper.dart';
-import 'package:flutter_course_a/ui/SignUpScreen.dart';
-import 'package:flutter_course_a/ui/ui_helper/ThemeSwitcher.dart';
+import 'package:flutter_course_a/logic/providers/CryptoDataProvider.dart';
+import 'package:flutter_course_a/logic/providers/MarketViewProvider.dart';
+import 'package:flutter_course_a/logic/providers/ThemeProvider.dart';
+import 'package:flutter_course_a/logic/providers/UserDataProvider.dart';
+import 'package:flutter_course_a/Presentation/ui/MainWrapper.dart';
+import 'package:flutter_course_a/Presentation/ui/SignUpScreen.dart';
+import 'package:flutter_course_a/Presentation/ui/ui_helper/ThemeSwitcher.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   // turn off landscape
@@ -18,7 +20,8 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ThemeProvider()),
     ChangeNotifierProvider(create: (context) => CryptoDataProvider()),
-    ChangeNotifierProvider(create: (context) => MarketViewProvider())
+    ChangeNotifierProvider(create: (context) => MarketViewProvider()),
+    ChangeNotifierProvider(create: (context) => UserDataProvider())
   ], child: const MyMaterialApp()));
 }
 
@@ -40,10 +43,26 @@ class _MyMaterialAppState extends State<MyMaterialApp> {
         darkTheme: MyThemes.darkTheme,
         debugShowCheckedModeBanner: false,
         // when change language not change direction app ==> Directionality
-        home: const Directionality(
-            textDirection: TextDirection.ltr, child: SignUpScreen()
-            // child: MainWrapper()
-            ),
+        home: FutureBuilder<SharedPreferences>(
+          future: SharedPreferences.getInstance(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              SharedPreferences sharedPreferences = snapshot.data!;
+              var loggedInState =
+                  sharedPreferences.getBool('LoggedIn') ?? false;
+
+              if (loggedInState) {
+                return const MainWrapper();
+              } else {
+                return const SignUpScreen();
+              }
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       );
     });
   }

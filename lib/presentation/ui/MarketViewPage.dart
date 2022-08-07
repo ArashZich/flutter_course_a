@@ -6,11 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_course_a/network/ResponseModel.dart';
-import 'package:flutter_course_a/models/CryptoModel/CryptoData.dart';
-import 'package:flutter_course_a/providers/MarketViewProvider.dart';
-import 'package:flutter_course_a/helpers/decimalRounder.dart';
-import 'package:flutter_course_a/ui/ui_helper/ShimmerMarketWidget.dart';
+import 'package:flutter_course_a/data/data_source/ResponseModel.dart';
+import 'package:flutter_course_a/data/models/CryptoModel/CryptoData.dart';
+import 'package:flutter_course_a/logic/providers/MarketViewProvider.dart';
+import 'package:flutter_course_a/Presentation/helpers/decimalRounder.dart';
+import 'package:flutter_course_a/Presentation/ui/ui_helper/ShimmerMarketWidget.dart';
 
 class MarketViewPage extends StatefulWidget {
   const MarketViewPage({Key? key}) : super(key: key);

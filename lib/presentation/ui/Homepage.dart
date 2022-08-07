@@ -1,17 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_course_a/helpers/decimalRounder.dart';
-import 'package:flutter_course_a/models/CryptoModel/CryptoData.dart';
-import 'package:flutter_course_a/providers/CryptoDataProvider.dart';
-import 'package:flutter_course_a/ui/ui_helper/HomePageView.dart';
-import 'package:flutter_course_a/ui/ui_helper/ThemeSwitcher.dart';
+import 'package:flutter_course_a/Presentation/helpers/decimalRounder.dart';
+
+import 'package:flutter_course_a/data/models/CryptoModel/CryptoData.dart';
+import 'package:flutter_course_a/logic/providers/CryptoDataProvider.dart';
+import 'package:flutter_course_a/Presentation/ui/ui_helper/HomePageView.dart';
+import 'package:flutter_course_a/Presentation/ui/ui_helper/ThemeSwitcher.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:flutter_course_a/network/ResponseModel.dart';
+import 'package:flutter_course_a/data/data_source/ResponseModel.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -368,7 +370,11 @@ class _HomePageState extends State<HomePage> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            model[index].name!,
+                                            model[index].name!.length > 10
+                                                ? model[index]
+                                                    .name!
+                                                    .substring(1, 8)
+                                                : model[index].name!,
                                             style: textTheme.bodySmall,
                                           ),
                                           Text(
